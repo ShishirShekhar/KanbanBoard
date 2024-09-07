@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, DM_Sans } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import Navbar from "@/components/common/Navbar/Navbar";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   manifest: "./manifest.json",
   openGraph: {
     type: "website",
-    url: "",
+    url: "https://shishir-kanban.vercel.app/",
     title: "Kanban Board",
     description:
       "A simple Kanban Board application built with Next.js, React, TypeScript, Ant Design, and Firebase.",
@@ -47,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${dmSans.className} antialiased`}>
+        <Navbar />
         <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>

@@ -1,0 +1,15 @@
+.taskCard {
+    @apply h-fit flex items-start gap-2 border rounded-2xl p-4;
+}
+
+.header {
+    @apply items-start;
+}
+
+.content {
+    @apply text-start;
+}
+
+.footer {
+    @apply flex gap-2 items-center;
+}

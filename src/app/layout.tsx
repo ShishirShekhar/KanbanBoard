@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   manifest: "./manifest.json",
   openGraph: {
     type: "website",
-    url: "",
+    url: "https://shishir-kanban.vercel.app/",
     title: "Kanban Board",
     description:
       "A simple Kanban Board application built with Next.js, React, TypeScript, Ant Design, and Firebase.",

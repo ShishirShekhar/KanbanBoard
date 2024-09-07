@@ -4,8 +4,10 @@
 
 :root {
   --background: #F9FCFE;
-  ;
   --foreground: #171717;
+  --violet: #8A30E5;
+  --yellow: #FFC14E;
+  --green: #06C270;
 }
 
 body {

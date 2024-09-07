@@ -1,0 +1,11 @@
+.toDo {
+    @apply w-80 border rounded-xl overflow-hidden;
+}
+
+.header {
+    @apply flex justify-center items-center;
+}
+
+.content {
+    @apply flex flex-col gap-4 p-4;
+}

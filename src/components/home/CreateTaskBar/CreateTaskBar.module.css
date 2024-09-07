@@ -1,0 +1,3 @@
+.container {
+    @apply rounded-xl shadow-xl p-4 mt-10;
+}

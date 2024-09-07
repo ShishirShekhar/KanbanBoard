@@ -1,0 +1,7 @@
+.home {
+    @apply flex flex-col px-10 lg:px-52 gap-10 min-h-[90vh];
+}
+
+.container {
+    @apply flex flex-wrap gap-10 lg:gap-2 justify-center lg:justify-between;
+}

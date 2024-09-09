@@ -23,6 +23,7 @@ const titleStyle: CSSProperties = {
 
 const contentStyle: CSSProperties = {
   flex: "none",
+  minHeight: "150px",
 };
 
 const TaskList: FC<taskListProps> = ({ type, tasks }) => {

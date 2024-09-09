@@ -1,67 +1,36 @@
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { Modal, notification } from "antd";
-import { BaseTask, Task } from "@/lib/types";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Form, Input, Modal, notification, DatePicker, Select } from "antd";
+import { Task } from "@/lib/types";
 import { addTask } from "@/lib/firebase/functions/tasks";
-import styles from "./TaskModal.module.css";
 
-interface taskModalProps {
+interface TaskModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   setTasks: Dispatch<SetStateAction<Task[]>>;
 }
 
-const TaskModal = ({ open, setOpen, setTasks }: taskModalProps) => {
-  const [inputData, setInputData] = useState<BaseTask>({
-    title: "",
-    description: "",
-    status: "Todo",
-    priority: "Low",
-    dueDate: new Date(),
-  });
+const { Option } = Select;
+
+const TaskModal = ({ open, setOpen, setTasks }: TaskModalProps) => {
+  const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-
-    if (name === "dueDate") {
-      setInputData((prev) => ({
-        ...prev,
-        dueDate: new Date(value),
-      }));
-    } else {
-      setInputData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const validateForm = () => {
-    return inputData.title.trim() !== "" && inputData.description.trim() !== "";
-  };
-
   const handleOk = async () => {
-    if (!validateForm()) {
-      notification.warning({
-        message: "Validation Error",
-        description: "Please fill in all the required fields.",
-      });
-      return;
-    }
-
     try {
+      const values = await form.validateFields();
       setConfirmLoading(true);
 
-      // Add task to Firestore, and keep dueDate as a Date object
-      const newTask: Task = await addTask(inputData);
-      setTasks((prev: Task[]) => [...prev, newTask]);
+      // Convert date picker value to Date object
+      const newTask: Task = {
+        ...values,
+        dueDate: values.dueDate.toDate(),
+      };
 
-      setInputData({
-        title: "",
-        description: "",
-        status: "Todo",
-        priority: "Low",
-        dueDate: new Date(),
-      });
+      // Add task to Firestore
+      const addedTask = await addTask(newTask);
+      setTasks((prev) => [...prev, addedTask]);
+
+      form.resetFields();
       setOpen(false);
 
       notification.success({
@@ -79,13 +48,7 @@ const TaskModal = ({ open, setOpen, setTasks }: taskModalProps) => {
   };
 
   const handleCancel = () => {
-    setInputData({
-      title: "",
-      description: "",
-      status: "Todo",
-      priority: "Low",
-      dueDate: new Date(),
-    });
+    form.resetFields();
     setOpen(false);
   };
 
@@ -98,64 +61,65 @@ const TaskModal = ({ open, setOpen, setTasks }: taskModalProps) => {
       onCancel={handleCancel}
       okText="Add Task"
     >
-      <form className={styles.form}>
-        <label htmlFor="title">Title: </label>
-        <input
-          type="text"
-          id="title"
+      <Form
+        form={form}
+        name="taskForm"
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        layout="vertical"
+        initialValues={{
+          status: "Todo",
+          priority: "Low",
+        }}
+      >
+        <Form.Item
+          label="Title"
           name="title"
-          placeholder="Task Title"
-          autoComplete="new-text"
-          value={inputData.title}
-          onChange={handleChange}
-          required
-        />
+          rules={[{ required: true, message: "Please input the title!" }]}
+        >
+          <Input placeholder="Task Title" />
+        </Form.Item>
 
-        <label htmlFor="description">Description: </label>
-        <textarea
-          id="description"
+        <Form.Item
+          label="Description"
           name="description"
-          value={inputData.description}
-          onChange={handleChange}
-          required
-        />
+          rules={[{ required: true, message: "Please input the description!" }]}
+        >
+          <Input.TextArea placeholder="Task Description" />
+        </Form.Item>
 
-        <label htmlFor="status">Status: </label>
-        <select
-          id="status"
+        <Form.Item
+          label="Status"
           name="status"
-          value={inputData.status}
-          onChange={handleChange}
-          required
+          rules={[{ required: true, message: "Please select the status!" }]}
         >
-          <option value="Todo">Todo</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Done">Done</option>
-        </select>
+          <Select placeholder="Select Status">
+            <Option value="Todo">Todo</Option>
+            <Option value="In Progress">In Progress</Option>
+            <Option value="Done">Done</Option>
+          </Select>
+        </Form.Item>
 
-        <label htmlFor="priority">Priority: </label>
-        <select
-          id="priority"
+        <Form.Item
+          label="Priority"
           name="priority"
-          value={inputData.priority}
-          onChange={handleChange}
-          required
+          rules={[{ required: true, message: "Please select the priority!" }]}
         >
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
+          <Select placeholder="Select Priority">
+            <Option value="Low">Low</Option>
+            <Option value="Medium">Medium</Option>
+            <Option value="High">High</Option>
+          </Select>
+        </Form.Item>
 
-        <label htmlFor="dueDate">Due Date: </label>
-        <input
-          type="date"
-          id="dueDate"
+        <Form.Item
+          label="Due Date"
           name="dueDate"
-          value={inputData.dueDate.toISOString().split("T")[0]}
-          onChange={handleChange}
-          required
-        />
-      </form>
+          rules={[{ required: true, message: "Please select the due date!" }]}
+        >
+          <DatePicker format="DD/MM/YYY" />
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

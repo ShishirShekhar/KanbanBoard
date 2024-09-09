@@ -49,14 +49,8 @@ const TaskList: FC<taskListProps> = ({ type, tasks }) => {
       </Header>
 
       <Content style={contentStyle} className={styles.content}>
-        {tasks.map((task, index) => (
-          <TaskCard
-            key={index}
-            priority={task.priority}
-            title={task.title}
-            description={task.description}
-            dueDate={task.dueDate}
-          />
+        {tasks.map((task) => (
+          <TaskCard key={task.id} task={task} />
         ))}
       </Content>
     </Layout>

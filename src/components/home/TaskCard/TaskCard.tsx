@@ -1,17 +1,12 @@
-import { CSSProperties, FC } from "react";
+import { CSSProperties } from "react";
 import { Button, Divider, Layout } from "antd";
 import { Header, Content, Footer } from "antd/es/layout/layout";
 import { CalendarOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Task } from "@/lib/types";
+import { formatDate } from "@/lib/utils";
 import styles from "./TaskCard.module.css";
-
-interface TaskCardProps {
-  priority: "High" | "Medium" | "Low";
-  title: string;
-  description: string;
-  dueDate: string;
-}
 
 const taskCardStyle: CSSProperties = {
   background: "white",
@@ -38,32 +33,27 @@ const footerStyle: CSSProperties = {
   padding: 0,
 };
 
-const TaskCard: FC<TaskCardProps> = ({
-  priority,
-  title,
-  description,
-  dueDate,
-}) => {
+const TaskCard = ({ task }: { task: Task }) => {
   return (
     <Layout style={taskCardStyle} className={styles.taskCard}>
       <Header style={headerStyle} className={styles.header}>
         <Button type="primary" size="small">
-          {priority}
+          {task.priority}
         </Button>
       </Header>
 
       <Content style={contentStyle} className={styles.content}>
         <Title level={4} style={marginZeroStyle}>
-          {title}
+          {task.title}
         </Title>
-        <Paragraph style={marginZeroStyle}>{description}</Paragraph>
+        <Paragraph style={marginZeroStyle}>{task.description}</Paragraph>
       </Content>
 
       <Divider style={marginZeroStyle} />
 
       <Footer style={footerStyle} className={styles.footer}>
         <CalendarOutlined />
-        <Paragraph style={marginZeroStyle}>{dueDate}</Paragraph>
+        <Paragraph style={marginZeroStyle}>{formatDate(task.dueDate)}</Paragraph>
       </Footer>
     </Layout>
   );

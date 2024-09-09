@@ -20,10 +20,13 @@ export async function getAllTasks(): Promise<Task[]> {
 }
 
 // Add a new task
-export async function addTask(task: BaseTask): Promise<void> {
+export async function addTask(task: BaseTask): Promise<Task> {
     try {
-        const docRef = doc(db, "tasks", uuidv4());
+        const id = uuidv4();
+        const docRef = doc(db, "tasks", id);
+
         await setDoc(docRef, task);
+        return { ...task, id };
     } catch (error) {
         console.error("Error adding task: ", error);
         throw new Error("Error adding task.");

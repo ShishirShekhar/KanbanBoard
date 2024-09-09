@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../Config";
-import { Task } from "@/lib/types";
+import { BaseTask, Task } from "@/lib/types";
 
 // Fetch all tasks
 export async function getAllTasks(): Promise<Task[]> {
@@ -20,7 +20,7 @@ export async function getAllTasks(): Promise<Task[]> {
 }
 
 // Add a new task
-export async function addTask(task: Task): Promise<void> {
+export async function addTask(task: BaseTask): Promise<void> {
     try {
         const docRef = doc(db, "tasks", uuidv4());
         await setDoc(docRef, task);

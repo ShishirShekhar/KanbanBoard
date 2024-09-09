@@ -1,7 +1,11 @@
-export type Task = {
-    status: "Todo" | "In Progress" | "Done";
-    priority: "High" | "Medium" | "Low";
+export type BaseTask = {
     title: string;
     description: string;
-    dueDate: string;
+    status: "Todo" | "In Progress" | "Done";
+    priority: "High" | "Medium" | "Low";
+    dueDate: Date;
+};
+
+export type Task = BaseTask & {
+    id: string;
 };

@@ -1,13 +1,17 @@
+import { CSSProperties } from "react";
 import { Button, Flex } from "antd";
 import Title from "antd/es/typography/Title";
 import styles from "./CreateTaskBar.module.css";
-import { CSSProperties, FC } from "react";
 
 const buttonStyle: CSSProperties = {
   background: "var(--violet)",
 };
 
-const CreateTaskBar: FC = () => {
+const CreateTaskBar = ({
+  showModal,
+}: {
+  showModal: () => void;
+}) => {
   return (
     <Flex
       justify="space-between"
@@ -20,7 +24,12 @@ const CreateTaskBar: FC = () => {
         Desktop & Mobile Application
       </Title>
 
-      <Button type="primary" size="large" style={buttonStyle}>
+      <Button
+        type="primary"
+        size="large"
+        style={buttonStyle}
+        onClick={showModal}
+      >
         Create Task
       </Button>
     </Flex>

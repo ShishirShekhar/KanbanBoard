@@ -1,14 +1,16 @@
-import { CSSProperties, FC } from "react";
-import { Layout } from "antd";
+import { CSSProperties, Dispatch, FC, SetStateAction } from "react";
+import { Layout, notification } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Title from "antd/es/typography/Title";
 import TaskCard from "../TaskCard/TaskCard";
 import { Task } from "@/lib/types";
 import styles from "./TaskList.module.css";
+import { updateTask } from "@/lib/firebase/functions/tasks";
 
-interface taskListProps {
+interface TaskListProps {
   type: "Todo" | "In Progress" | "Done";
   tasks: Task[];
+  setTasks: Dispatch<SetStateAction<Task[]>>;
 }
 
 const layoutStyle: CSSProperties = {
@@ -23,20 +25,53 @@ const titleStyle: CSSProperties = {
 
 const contentStyle: CSSProperties = {
   flex: "none",
+  minHeight: "150px",
 };
 
-const TaskList: FC<taskListProps> = ({ type, tasks }) => {
-  const background =
+const TaskList: FC<TaskListProps> = ({ type, tasks, setTasks }) => {
+  const backgroundColor =
     type === "Todo"
       ? "var(--violet)"
       : type === "In Progress"
       ? "var(--yellow)"
       : "var(--green)";
-  const color = type === "In Progress" ? "black" : "white";
+  const textColor = type === "In Progress" ? "black" : "white";
 
   const headerStyle: CSSProperties = {
-    background: background,
-    color: color,
+    background: backgroundColor,
+    color: textColor,
+  };
+
+  const handleStatusChange = async (
+    taskId: string,
+    newStatus: Task["status"]
+  ) => {
+    const taskToUpdate = tasks.find((task) => task.id === taskId);
+
+    if (taskToUpdate) {
+      try {
+        // Update the task status in Firestore
+        await updateTask({ ...taskToUpdate, status: newStatus });
+
+        // Update the task list in the component state
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === taskId ? { ...task, status: newStatus } : task
+          )
+        );
+
+        notification.success({
+          message: "Task updated",
+          description: "The task status has been updated successfully.",
+        });
+      } catch (error) {
+        notification.error({
+          message: "Error updating task",
+          description:
+            "An error occurred while updating the task. Please try again later.",
+        });
+      }
+    }
   };
 
   return (
@@ -48,13 +83,11 @@ const TaskList: FC<taskListProps> = ({ type, tasks }) => {
       </Header>
 
       <Content style={contentStyle} className={styles.content}>
-        {tasks.map((task, index) => (
+        {tasks.map((task) => (
           <TaskCard
-            key={index}
-            priority={task.priority}
-            title={task.title}
-            description={task.description}
-            dueDate={task.dueDate}
+            key={task.id}
+            task={task}
+            onStatusChange={handleStatusChange}
           />
         ))}
       </Content>

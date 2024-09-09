@@ -71,15 +71,15 @@ export default function Home() {
 
       <div className={styles.container} aria-labelledby="task-lists">
         <section aria-label="Todo Tasks">
-          <TaskList type="Todo" tasks={todoTasks} />
+          <TaskList type="Todo" tasks={todoTasks} setTasks={setTasks} />
         </section>
 
         <section aria-label="In Progress Tasks">
-          <TaskList type="In Progress" tasks={inProgressTasks} />
+          <TaskList type="In Progress" tasks={inProgressTasks} setTasks={setTasks} />
         </section>
 
         <section aria-label="Completed Tasks">
-          <TaskList type="Done" tasks={doneTasks} />
+          <TaskList type="Done" tasks={doneTasks} setTasks={setTasks} />
         </section>
       </div>
     </main>

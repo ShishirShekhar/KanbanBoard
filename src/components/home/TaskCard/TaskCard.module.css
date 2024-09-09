@@ -7,7 +7,7 @@
 }
 
 .content {
-    @apply text-start;
+    @apply text-start w-full;
 }
 
 .footer {

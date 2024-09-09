@@ -1,6 +1,5 @@
 import { CSSProperties, FC } from "react";
 import {
-  Button,
   Divider,
   Dropdown,
   Flex,
@@ -12,6 +11,7 @@ import { Header, Content, Footer } from "antd/es/layout/layout";
 import { CalendarOutlined, DownOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
+import Tag from "@/components/ui/Tag/Tag";
 import { Task } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import styles from "./TaskCard.module.css";
@@ -74,9 +74,7 @@ const TaskCard: FC<TaskCardProps> = ({ task, onStatusChange }) => {
   return (
     <Layout style={taskCardStyle} className={styles.taskCard}>
       <Header style={headerStyle} className={styles.header}>
-        <Button type="primary" size="small">
-          {task.priority}
-        </Button>
+        <Tag value={task.priority} />
       </Header>
 
       <Content style={contentStyle} className={styles.content}>

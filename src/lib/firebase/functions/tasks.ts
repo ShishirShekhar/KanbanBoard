@@ -38,7 +38,9 @@ export async function addTask(task: BaseTask): Promise<Task> {
 export async function updateTask(task: Task): Promise<void> {
     try {
         const taskRef = doc(db, "tasks", task.id);
-        await updateDoc(taskRef, task);
+        await updateDoc(taskRef, {
+            status: task.status
+        });
     } catch (error) {
         console.error("Error updating task: ", error);
         throw new Error("Error updating task.");
